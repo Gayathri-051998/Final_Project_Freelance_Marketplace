@@ -21,3 +21,4 @@ exports.getMyServices = async (req, res) => {
   const services = await Service.find({ freelancer: req.user._id });
   res.json(services);
 };
+

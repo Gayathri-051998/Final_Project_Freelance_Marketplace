@@ -13,3 +13,4 @@ router.get('/me', protect, getContractsByUser);
 router.put('/:id/status', protect, updateContractStatus);
 
 module.exports = router;
+

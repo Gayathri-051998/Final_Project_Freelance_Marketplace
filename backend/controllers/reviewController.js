@@ -13,3 +13,5 @@ exports.getReviewsForUser = async (req, res) => {
   const reviews = await Review.find({ reviewedUser: req.params.userId }).populate('reviewer');
   res.json(reviews);
 };
+
+

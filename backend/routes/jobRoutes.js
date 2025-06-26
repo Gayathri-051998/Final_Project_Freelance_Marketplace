@@ -9,3 +9,4 @@ router.post('/', protect, createJob);
 router.get('/me', protect, getMyJobs);
 
 module.exports = router;
+

@@ -21,3 +21,5 @@ exports.getMyJobs = async (req, res) => {
   const jobs = await Job.find({ client: req.user._id });
   res.json(jobs);
 };
+
+

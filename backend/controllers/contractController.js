@@ -24,6 +24,8 @@ exports.getContractsByUser = async (req, res) => {
       res.status(400).json({ message: 'Failed to fetch contracts', error: err.message });
     }
   };
+
+  
   
 exports.updateContractStatus = async (req, res) => {
   try {
