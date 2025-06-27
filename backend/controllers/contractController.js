@@ -27,18 +27,26 @@ exports.getContractsByUser = async (req, res) => {
 
 
   exports.updateContractStatus = async (req, res) => {
-    console.log("BODY:", req.body);  // ✅ Log to verify input
     try {
-      const contract = await Contract.findById(req.params.id);
-      if (!contract) return res.status(404).json({ message: 'Contract not found' });
+      const updatedContract = await Contract.findByIdAndUpdate(
+        req.params.id,
+        { status: req.body.status },
+        {
+          new: true,
+          runValidators: false,  // ✅ This prevents Mongoose from re-validating all required fields
+        }
+      );
   
-      contract.status = req.body.status || contract.status;
-      await contract.save();
-      res.json(contract);
+      if (!updatedContract) {
+        return res.status(404).json({ message: 'Contract not found' });
+      }
+  
+      res.json(updatedContract);
     } catch (err) {
-      console.error("Update contract error:", err.message);  // ✅ log error
+      console.error('Update contract error:', err.message);
       res.status(400).json({ message: 'Failed to update contract', error: err.message });
     }
   };
+  
   
   
