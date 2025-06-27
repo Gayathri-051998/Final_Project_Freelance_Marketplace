@@ -25,17 +25,28 @@ exports.getContractsByUser = async (req, res) => {
     }
   };
 
-  
-  
-exports.updateContractStatus = async (req, res) => {
-  try {
-    const contract = await Contract.findById(req.params.id);
-    if (!contract) return res.status(404).json({ message: 'Contract not found' });
 
-    contract.status = req.body.status || contract.status;
-    await contract.save();
-    res.json(contract);
-  } catch (err) {
-    res.status(400).json({ message: 'Failed to update contract' });
-  }
-};
+exports.updateContractStatus = async (req, res) => {
+
+     // 🔍 Add this line to debug incoming request
+  console.log('PUT /contracts/:id/status', { id: req.params.id, body: req.body });
+
+    const validStatuses = ['accepted', 'in_progress', 'completed'];
+    const { status } = req.body;
+  
+    if (!status || !validStatuses.includes(status)) {
+      return res.status(400).json({ message: 'Invalid or missing status' });
+    }
+  
+    try {
+      const contract = await Contract.findById(req.params.id);
+      if (!contract) return res.status(404).json({ message: 'Contract not found' });
+  
+      contract.status = status;
+      await contract.save();
+      res.json(contract);
+    } catch (err) {
+      res.status(400).json({ message: 'Failed to update contract', error: err.message });
+    }
+  };
+  
