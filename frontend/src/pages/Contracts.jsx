@@ -86,6 +86,7 @@ const Contracts = () => {
   Pay Now
 </button>
 
+
           </div>
         ))
       )}

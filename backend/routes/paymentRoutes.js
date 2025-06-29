@@ -20,6 +20,7 @@ router.post('/create-checkout-session', protect, async (req, res) => {
             product_data: {
               name: 'Freelance Service Payment',
             },
+            
             unit_amount: amount * 100, // in cents
           },
           quantity: 1,

@@ -41,6 +41,8 @@ const Profile = () => {
     }
   };
 
+  
+
   return (
     <div className="max-w-lg mx-auto p-6 mt-10 border shadow">
       <h2 className="text-xl font-bold mb-4">My Profile</h2>

@@ -10,3 +10,4 @@ router.get('/me', protect, getMyJobs); // existing
 router.get('/my-jobs', protect, getMyJobs); // ✅ added alias route
 
 module.exports = router;
+
