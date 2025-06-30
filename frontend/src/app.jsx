@@ -19,6 +19,7 @@ import CreateContract from './pages/CreateContract';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancel from './pages/PaymentCancel';
 
+import Notifications from './Components/Notifications';
 const App = () => {
   const { user } = useContext(AuthContext);
 

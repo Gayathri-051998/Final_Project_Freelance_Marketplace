@@ -5,7 +5,8 @@ import { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
 import { loadStripe } from '@stripe/stripe-js';
-
+import { NotificationContext } from '../context/NotificationContext';
+const { addNotification } = useContext(NotificationContext);
 
 
 const stripePromise = loadStripe('pk_test_51RfKm4Gfpwi1sYyw3Xzq7rP1pVfFIJOdqiZPcBQFiRbRngG1tTGB3UYsjgAp1pxmnEoPHKJQeTBAXKH0rnbm8e9z00Rjir6uO1*'); // ✅ Stripe Publishable Key
@@ -14,7 +15,7 @@ const Contracts = () => {
   const { token } = useContext(AuthContext);
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  addNotification('✅ Contract marked as completed!');
   useEffect(() => {
     console.log("Token being sent:", token);  // ← Add this
     axios
@@ -39,6 +40,7 @@ const Contracts = () => {
       setContracts(prev =>
         prev.map(c => (c._id === id ? { ...c, status: newStatus } : c))
       );
+      addNotification('✅ Contract marked as completed!');
     } 
     catch (err) {
       console.error('Failed to update status:', err.message);
@@ -74,7 +76,7 @@ const Contracts = () => {
     }
   };
   
-
+  
   return (
     <div className="p-6">
       <h2 className="text-xl font-bold mb-4">Contracts</h2>
