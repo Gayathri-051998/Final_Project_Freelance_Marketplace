@@ -12,6 +12,7 @@ const Navbar = () => {
     navigate('/login');   // ✅ Redirect to login
   };
 
+  
   return (
     <nav className="bg-gray-800 text-white p-4 flex justify-between">
       <div className="space-x-4">

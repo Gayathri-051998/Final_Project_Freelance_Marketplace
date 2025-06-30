@@ -22,6 +22,7 @@ const AuthProvider = ({ children }) => {
     setToken(token);
   };
 
+  
   const logout = () => {
     setUser(null);
     setToken(null);

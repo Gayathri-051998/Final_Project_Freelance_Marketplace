@@ -30,7 +30,6 @@ const PostService = () => {
   };
   
 
-  
 
   return (
     <div className="max-w-md mx-auto p-6 mt-8 border shadow">

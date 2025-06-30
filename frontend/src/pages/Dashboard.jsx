@@ -15,6 +15,7 @@ const Dashboard = () => {
         <h1 className="text-2xl font-bold mb-4">Welcome, {user?.name}</h1>
         <p>Your role: <strong>{user?.role}</strong></p>
     
+    
         
         <button
           onClick={logout}

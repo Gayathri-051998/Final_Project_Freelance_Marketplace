@@ -29,6 +29,7 @@ const PostJob = () => {
     }
   };
 
+  
   return (
     <div className="max-w-md mx-auto p-6 mt-8 border shadow">
       <h2 className="text-xl font-bold mb-4">Post a Job</h2>

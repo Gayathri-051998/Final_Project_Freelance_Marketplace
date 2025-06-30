@@ -23,6 +23,7 @@ const Login = () => {
     }
   };
 
+  
   return (
     <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow">
       <h2 className="text-2xl font-bold mb-4">Login</h2>
