@@ -20,9 +20,16 @@ app.use(express.json());
 connectDB();
 
 // Middleware
-app.use(cors());
-
-
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || origin.includes('netlify.app') || origin.includes('localhost')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
 
 // Routes

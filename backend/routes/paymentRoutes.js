@@ -12,7 +12,9 @@ router.post('/create-checkout-session', protect, async (req, res) => {
         console.log("💰 Amount:", amount);
         console.log("✅ Success URL:", success_url);
         console.log("❌ Cancel URL:", cancel_url);
-        
+        if (!amount || isNaN(amount)) {
+            return res.status(400).json({ error: 'Invalid amount' });
+          }
     
         const session = await stripe.checkout.sessions.create({
           payment_method_types: ['card'],
@@ -34,7 +36,7 @@ router.post('/create-checkout-session', protect, async (req, res) => {
       
     res.json({ id: session.id });
   } catch (error) {
-    console.error('❌ Stripe session creation failed:', err.message);
+    console.error('❌ Stripe session creation failed:', error.message);
     res.status(500).json({ error: 'Failed to create Stripe session' });
   }
 });
