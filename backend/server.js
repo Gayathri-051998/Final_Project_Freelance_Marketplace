@@ -10,7 +10,7 @@ const serviceRoutes = require('./routes/serviceRoutes');
 const contractRoutes = require('./routes/contractRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 
-
+const paymentRoutes = require('./routes/paymentRoutes');
 
 
 dotenv.config();
@@ -31,7 +31,7 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/contracts', contractRoutes);
 app.use('/api/reviews', reviewRoutes);
-
+app.use('/api/payments', paymentRoutes);
 
 // Root route
 app.get('/', (req, res) => {

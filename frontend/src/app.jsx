@@ -16,6 +16,9 @@ import Profile from './pages/Profile';
 import ChangePassword from './pages/ChangePassword';
 import CreateContract from './pages/CreateContract';
 
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentCancel from './pages/PaymentCancel';
+
 const App = () => {
   const { user } = useContext(AuthContext);
 
@@ -35,6 +38,9 @@ const App = () => {
         <Route path="/create-contract" element={user ? <CreateContract /> : <Navigate to="/login" />} />
         <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
         <Route path="/change-password" element={user ? <ChangePassword /> : <Navigate to="/login" />} />
+
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-cancel" element={<PaymentCancel />} />
 
         <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
       </Routes>
