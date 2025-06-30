@@ -51,6 +51,8 @@ const Contracts = () => {
     const stripe = await stripePromise;
   
     try {
+      const currentOrigin = window.location.origin;  // ✅ Fix: define it here
+  
       const res = await axios.post('/api/payments/create-checkout-session', {
         amount,
         success_url: `${currentOrigin}/payment-success`,
@@ -67,6 +69,7 @@ const Contracts = () => {
         alert(result.error.message);
       }
     } catch (err) {
+      console.error('Payment error:', err);
       alert('Error initiating payment');
     }
   };
