@@ -4,7 +4,7 @@ A full-stack freelance marketplace application where **freelancers offer service
 
 ---
 
-## 🔧 Tech Stack
+## Tech Stack
 
 - **Frontend**: React.js + TailwindCSS
 - **Backend**: Node.js + Express.js
@@ -15,7 +15,7 @@ A full-stack freelance marketplace application where **freelancers offer service
 
 ---
 
-## 📁 Folder Structure
+##  Folder Structure
 
 ```
 freelance-marketplace/
@@ -25,7 +25,7 @@ freelance-marketplace/
 
 ---
 
-## ⚙️ Setup Instructions
+##  Setup Instructions
 
 ### 1. Clone the Repository
 
@@ -36,7 +36,7 @@ cd freelance-marketplace
 
 ---
 
-## 🚀 Backend Setup (`/backend`)
+##  Backend Setup (`/backend`)
 
 ### Step 1: Install dependencies
 
@@ -63,7 +63,7 @@ npm run dev
 
 ---
 
-## 🌐 Frontend Setup (`/frontend`)
+##  Frontend Setup (`/frontend`)
 
 ### Step 1: Install dependencies
 
@@ -88,20 +88,20 @@ npm run dev
 
 ---
 
-## 🔐 Test Login Credentials (after registration)
+##  Test Login Credentials (after registration)
 
 - Roles: `client` or `freelancer`
 - You can register new users from the Register page
 
 ---
 
-## 🧾 Features
+##  Features
 
-### ✔️ Auth
+###  Auth
 - Register & login (JWT)
 - Role-based (client / freelancer)
 
-### ✔️ Freelancers
+###  Freelancers
 - Post/manage services
 - View contracts
 - Respond to reviews
@@ -120,9 +120,9 @@ npm run dev
 
 ---
 
-## 🧑‍💻 Deployment Instructions
+##  Deployment Instructions
 
-### 🔹 Backend on Render
+###  Backend on Render
 
 1. Push `backend/` folder to a GitHub repo
 2. Go to [https://render.com](https://render.com)
@@ -133,7 +133,7 @@ npm run dev
    - Environment Variables: `MONGO_URI`, `JWT_SECRET`
 5. Deploy & get API base URL
 
-### 🔹 Frontend on Netlify
+###  Frontend on Netlify
 
 1. Push `frontend/` to GitHub
 2. Go to [https://netlify.com](https://netlify.com)
@@ -146,13 +146,13 @@ npm run dev
 
 ---
 
-## 📸 Screenshots
+##  Screenshots
 
 _(Optional: include login, dashboard, job/service forms, contract views)_
 
 ---
 
-## ✍️ Author
+##  Author
 
-- Built by [Your Name]
+- Built by Gayathri
 - Submitted for Institute Project (MERN Full Stack)
