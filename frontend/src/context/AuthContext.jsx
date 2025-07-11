@@ -1,9 +1,8 @@
 import React, { createContext, useState, useEffect } from 'react';
 
-
 export const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')) || null);
   const [token, setToken] = useState(() => localStorage.getItem('token') || '');
 
@@ -22,12 +21,11 @@ const AuthProvider = ({ children }) => {
     setToken(token);
   };
 
-  
   const logout = () => {
     setUser(null);
     setToken(null);
     localStorage.removeItem('token');
-  localStorage.removeItem('user');
+    localStorage.removeItem('user');
   };
 
   return (
@@ -36,5 +34,3 @@ const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-export default AuthProvider;

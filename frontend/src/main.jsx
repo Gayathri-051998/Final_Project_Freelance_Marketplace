@@ -1,16 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './app';
+import App from './App';
 import './index.css';
-import AuthProvider from './context/AuthContext'; // ✅ FIXED: default import
+import { AuthProvider } from './context/AuthContext'; // ✅ named import
 import NotificationProvider from './context/NotificationContext';
+import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AuthProvider>
-    <NotificationProvider>
-      <App />
-    </NotificationProvider>
-  </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <NotificationProvider>
+          <App />
+        </NotificationProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );

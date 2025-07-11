@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import {Link,  useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
@@ -31,6 +31,13 @@ const Login = () => {
         <input type="email" name="email" placeholder="Email" onChange={handleChange} required className="w-full border p-2" />
         <input type="password" name="password" placeholder="Password" onChange={handleChange} required className="w-full border p-2" />
         <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Login</button>
+        <p className="text-sm mt-4 text-center text-gray-600">
+                      Don’t have an account?{' '}
+                      <Link to="/register" className="text-blue-500 hover:underline">
+                        Register here
+                      </Link>
+                    </p>
+
       </form>
     </div>
   );

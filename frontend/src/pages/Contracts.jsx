@@ -7,8 +7,6 @@ import { AuthContext } from '../context/AuthContext';
 import { loadStripe } from '@stripe/stripe-js';
 import { NotificationContext } from '../context/NotificationContext';
 const { addNotification } = useContext(NotificationContext);
-
-
 const stripePromise = loadStripe('pk_test_51RfKm4Gfpwi1sYyw3Xzq7rP1pVfFIJOdqiZPcBQFiRbRngG1tTGB3UYsjgAp1pxmnEoPHKJQeTBAXKH0rnbm8e9z00Rjir6uO1*'); // ✅ Stripe Publishable Key
 
 const Contracts = () => {

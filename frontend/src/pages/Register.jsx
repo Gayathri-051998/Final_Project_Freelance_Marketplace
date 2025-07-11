@@ -35,6 +35,13 @@ const Register = () => {
           <option value="freelancer">Freelancer</option>
         </select>
         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Register</button>
+        <p className="text-sm mt-4 text-center text-gray-600">
+  Already have an account?{' '}
+  <Link to="/login" className="text-blue-500 hover:underline">
+    Login here
+  </Link>
+</p>
+
       </form>
     </div>
   );
