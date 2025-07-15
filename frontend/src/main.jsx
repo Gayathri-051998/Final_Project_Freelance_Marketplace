@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
-import { AuthProvider } from './context/AuthContext'; // ✅ named import
+import { AuthProvider } from './context/AuthContext'; // ✅ FIXED: named import
 import NotificationProvider from './context/NotificationContext';
 import { BrowserRouter } from 'react-router-dom';
 

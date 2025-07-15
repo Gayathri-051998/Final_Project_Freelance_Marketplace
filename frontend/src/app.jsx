@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
+
+// pages & components
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -15,13 +16,13 @@ import Navbar from './Components/NavBar';
 import Profile from './pages/Profile';
 import ChangePassword from './pages/ChangePassword';
 import CreateContract from './pages/CreateContract';
-
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancel from './pages/PaymentCancel';
 
-import Notifications from './Components/Notifications';
 const App = () => {
-  const { user } = useContext(AuthContext);
+  const auth = useContext(AuthContext);
+  if (!auth) return null; // 💥 Prevent crash if outside Provider
+  const { user } = auth;
 
   return (
     <Router>
@@ -39,16 +40,12 @@ const App = () => {
         <Route path="/create-contract" element={user ? <CreateContract /> : <Navigate to="/login" />} />
         <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
         <Route path="/change-password" element={user ? <ChangePassword /> : <Navigate to="/login" />} />
-
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-cancel" element={<PaymentCancel />} />
-
         <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
       </Routes>
     </Router>
   );
 };
-
-
 
 export default App;
