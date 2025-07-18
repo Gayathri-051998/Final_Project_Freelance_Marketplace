@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from '../axios'; // ✅ make sure this is your local axios wrapper
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 const MyServices = () => {
-  const { token } = useContext(AuthContext);
+  const { token } = useAuth();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true); // ✅ handle loading
 

@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from '../axios';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth} from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 function CreateContract() {
-  const { token } = useContext(AuthContext);
+  const { token } = useAuth();
   const [freelancers, setFreelancers] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [form, setForm] = useState({ freelancer: '', job: '' });

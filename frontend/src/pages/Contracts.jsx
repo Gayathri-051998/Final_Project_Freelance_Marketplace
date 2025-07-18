@@ -2,7 +2,7 @@ import React from 'react';
 import axios from '../axios';
 import { useEffect, useState, useContext } from 'react';
 
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 import { loadStripe } from '@stripe/stripe-js';
 import { NotificationContext } from '../context/NotificationContext';
@@ -10,7 +10,7 @@ const { addNotification } = useContext(NotificationContext);
 const stripePromise = loadStripe('pk_test_51RfKm4Gfpwi1sYyw3Xzq7rP1pVfFIJOdqiZPcBQFiRbRngG1tTGB3UYsjgAp1pxmnEoPHKJQeTBAXKH0rnbm8e9z00Rjir6uO1*'); // ✅ Stripe Publishable Key
 
 const Contracts = () => {
-  const { token } = useContext(AuthContext);
+  const { token } = useAuth();
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   addNotification('✅ Contract marked as completed!');

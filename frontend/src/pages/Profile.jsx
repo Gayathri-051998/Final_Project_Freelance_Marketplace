@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from '../axios';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 const Profile = () => {
-  const { token, user, login } = useContext(AuthContext);
+  const { token, user, login } = useAuth();
   const [form, setForm] = useState({ name: '', email: '', role: '', bio: '' });
 
   useEffect(() => {

@@ -1,9 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import axios from '../axios';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 const ChangePassword = () => {
-  const { token } = useContext(AuthContext);
+  const { token } = useAuth();
   const [form, setForm] = useState({ oldPassword: '', newPassword: '' });
 
   const handleChange = (e) => {

@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { useState, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
 const PostJob = () => {
-  const { token } = useContext(AuthContext);
+  const { token } = useAuth();
   const [form, setForm] = useState({
     title: '',
     description: '',
