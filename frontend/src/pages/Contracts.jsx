@@ -1,84 +1,71 @@
-import React from 'react';
+// src/pages/Contracts.jsx
+import React, { useEffect, useState, useContext } from 'react';
 import axios from '../axios';
-import { useEffect, useState, useContext } from 'react';
-
 import { useAuth } from '../context/AuthContext';
-
-import { loadStripe } from '@stripe/stripe-js';
 import { NotificationContext } from '../context/NotificationContext';
-const { addNotification } = useContext(NotificationContext);
-const stripePromise = loadStripe('pk_test_51RfKm4Gfpwi1sYyw3Xzq7rP1pVfFIJOdqiZPcBQFiRbRngG1tTGB3UYsjgAp1pxmnEoPHKJQeTBAXKH0rnbm8e9z00Rjir6uO1*'); // ✅ Stripe Publishable Key
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_test_...');
 
 const Contracts = () => {
   const { token } = useAuth();
+
+  const notificationContext = useContext(NotificationContext);
+  const addNotification = notificationContext?.addNotification || (() => {});
+
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
-  addNotification('✅ Contract marked as completed!');
+
   useEffect(() => {
-    console.log("Token being sent:", token);  // ← Add this
-    axios
-      .get('https://final-project-freelance-marketplace.onrender.com/api/contracts/me', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      
-      .then((res) => {
-        console.log("Contracts:", res.data);
-        setContracts(res.data);
-      })
-      
+    axios.get('/api/contracts/me', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => setContracts(res.data))
       .catch(() => alert('Failed to load contracts'))
       .finally(() => setLoading(false));
   }, [token]);
 
+  useEffect(() => {
+    if (!loading && contracts.length > 0) {
+      addNotification('✅ Contracts loaded!');
+    }
+  }, [loading]);
+
   const updateStatus = async (id, newStatus) => {
     try {
-      await axios.put(`https://final-project-freelance-marketplace.onrender.com/api/contracts/${id}/status`, { status: newStatus }, {
+      await axios.put(`/api/contracts/${id}/status`, { status: newStatus }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setContracts(prev =>
         prev.map(c => (c._id === id ? { ...c, status: newStatus } : c))
       );
       addNotification('✅ Contract marked as completed!');
-    } 
-    catch (err) {
-      console.error('Failed to update status:', err.message);
+    } catch (err) {
       alert('Failed to update status');
     }
-    
   };
 
   const handlePayment = async (amount) => {
     const stripe = await stripePromise;
-  
     try {
-      const currentOrigin = window.location.origin;  // ✅ Fix: define it here
-  
       const res = await axios.post('/api/payments/create-checkout-session', {
         amount,
-        success_url: `${currentOrigin}/payment-success`,
-        cancel_url: `${currentOrigin}/payment-cancel`
+        success_url: `${window.location.origin}/payment-success`,
+        cancel_url: `${window.location.origin}/payment-cancel`
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-  
-      const result = await stripe.redirectToCheckout({
-        sessionId: res.data.id,
-      });
-  
-      if (result.error) {
-        alert(result.error.message);
-      }
+
+      const result = await stripe.redirectToCheckout({ sessionId: res.data.id });
+      if (result.error) alert(result.error.message);
     } catch (err) {
-      console.error('Payment error:', err);
       alert('Error initiating payment');
     }
   };
-  
-  
+
   return (
     <div className="p-6">
       <h2 className="text-xl font-bold mb-4">Contracts</h2>
-  
       {loading ? (
         <p>Loading contracts...</p>
       ) : contracts.length === 0 ? (
@@ -99,22 +86,19 @@ const Contracts = () => {
                 >
                   {status}
                 </button>
-                
               ))}
             </div>
             <button
-      onClick={() => handlePayment(c.budget)}
-      className="mt-2 bg-indigo-600 text-white px-4 py-2 rounded"
-    >
-      Pay Now
-    </button>
+              onClick={() => handlePayment(c.budget)}
+              className="mt-2 bg-indigo-600 text-white px-4 py-2 rounded"
+            >
+              Pay Now
+            </button>
           </div>
         ))
       )}
     </div>
   );
-  
 };
-
 
 export default Contracts;

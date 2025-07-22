@@ -1,6 +1,4 @@
-
-
-  import { defineConfig } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
@@ -9,5 +7,8 @@ export default defineConfig({
     proxy: {
       '/api': 'https://final-project-freelance-marketplace.onrender.com',
     },
+  },
+  build: {
+    sourcemap: true, // ✅ This enables useful stack traces in Netlify builds
   },
 });

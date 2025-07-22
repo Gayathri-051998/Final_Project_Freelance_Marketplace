@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthContext } from './context/AuthContext';
+import NotificationList from './Components/NotificationList';
+import Navbar from './Components/NavBar';
 
-// pages & components
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -12,7 +13,6 @@ import PostService from './pages/PostService';
 import MyServices from './pages/MyServices';
 import Contracts from './pages/Contracts';
 import SubmitReview from './pages/SubmitReview';
-import Navbar from './Components/NavBar';
 import Profile from './pages/Profile';
 import ChangePassword from './pages/ChangePassword';
 import CreateContract from './pages/CreateContract';
@@ -21,12 +21,14 @@ import PaymentCancel from './pages/PaymentCancel';
 
 const App = () => {
   const auth = useContext(AuthContext);
-  if (!auth) return null; // 💥 Prevent crash if outside Provider
+  if (!auth) return null;
   const { user } = auth;
 
   return (
-    <Router>
+    <>
       {user && <Navbar />}
+      <NotificationList />
+
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
@@ -44,7 +46,7 @@ const App = () => {
         <Route path="/payment-cancel" element={<PaymentCancel />} />
         <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
       </Routes>
-    </Router>
+    </>
   );
 };
 
