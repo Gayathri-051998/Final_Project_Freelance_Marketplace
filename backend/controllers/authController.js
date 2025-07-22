@@ -9,6 +9,7 @@ const generateToken = (userId) => {
 
 // Register user
 const registerUser = async (req, res) => {
+  console.log("🔔 Received request body:", req.body); // ✅ Add this line for debugging
   const { name, email, password, role } = req.body;
 
   try {
