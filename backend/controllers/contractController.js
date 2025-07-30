@@ -10,20 +10,34 @@ exports.createContract = async (req, res) => {
 };
 
 exports.getContractsByUser = async (req, res) => {
-    console.log("Fetching contracts for user:", req.user._id); // ✅ Add this line
-    try {
-      const contracts = await Contract.find({
-        $or: [{ freelancer: req.user._id }, { client: req.user._id }],
-      })
-      .populate('job', 'title') // ✅ job.title
-      .populate('client', 'name') // ✅ client.name
-      .populate('freelancer', 'name'); // ✅ freelancer.name
-  
-      res.json(contracts);
-    } catch (err) {
-      res.status(400).json({ message: 'Failed to fetch contracts', error: err.message });
-    }
-  };
+  console.log("Fetching contracts for user:", req.user._id);
+
+  try {
+    const contracts = await Contract.find({
+      $or: [{ freelancer: req.user._id }, { client: req.user._id }],
+    })
+      .populate('job') // 👈 make sure it's just 'job' for now
+      .populate('client', 'name')
+      .populate('freelancer', 'name')
+
+    // 🔍 Add this log to see full contract objects
+    
+console.log(JSON.stringify(contracts, null, 2));
+    console.log("📦 Contracts from DB:", JSON.stringify(contracts, null, 2));
+    console.log("✅ First contract.job object:", contracts[0]?.job);
+    console.log("📦 Job inside contract:", contracts[0].job);
+    console.log("💸 contract[0].job.budget:", contracts[0]?.job?.budget);
+    
+    console.log("🧠 FULL job object sent to frontend:", JSON.stringify(contracts[0].job, null, 2));
+    console.log("💸 job.budget sent to frontend:", contracts[0].job?.budget);
+   
+    
+    res.json(contracts);
+  } catch (err) {
+    res.status(400).json({ message: 'Failed to fetch contracts', error: err.message });
+  }
+};
+
 
 
   exports.updateContractStatus = async (req, res) => {

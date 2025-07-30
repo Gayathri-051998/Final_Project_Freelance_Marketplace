@@ -5,11 +5,11 @@ import { useAuth } from '../context/AuthContext';
 import { NotificationContext } from '../context/NotificationContext';
 import { loadStripe } from '@stripe/stripe-js';
 
-const stripePromise = loadStripe('pk_test_...');
+const stripePromise = loadStripe("pk_test_51RfKm4Gfpwi1sYyw3Xzq7rP1pVfFIJOdqiZPcBQFiRbRngG1tTGB3UYsjgAp1pxmnEoPHKJQeTBAXKH0rnbm8e9z00Rjir6uO1");
 
 const Contracts = () => {
   const { token } = useAuth();
-
+  console.log("🔑 Token from AuthContext:", token);
   const notificationContext = useContext(NotificationContext);
   const addNotification = notificationContext?.addNotification || (() => {});
 
@@ -45,23 +45,45 @@ const Contracts = () => {
     }
   };
 
-  const handlePayment = async (amount) => {
-    const stripe = await stripePromise;
+  const handlePayment = async (contract) => {
     try {
-      const res = await axios.post('/api/payments/create-checkout-session', {
-        amount,
-        success_url: `${window.location.origin}/payment-success`,
-        cancel_url: `${window.location.origin}/payment-cancel`
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      const result = await stripe.redirectToCheckout({ sessionId: res.data.id });
-      if (result.error) alert(result.error.message);
-    } catch (err) {
-      alert('Error initiating payment');
+      const price = contract.job?.budget;
+  
+console.log("🧾 Full contract object:", contract);
+console.log("📦 Job inside contract:", contract.job);
+console.log("💸 Budget from job:", contract.job?.budget);
+      if (!contract.job?.budget || isNaN(contract.job.budget)) {
+        alert("Invalid payment amount");
+        return;
+      }
+  
+      const response = await axios.post(
+        'https://final-project-freelance-marketplace.onrender.com/api/payments/create-checkout-session',
+        {
+          amount: contract.job.budget ,
+          success_url: `${window.location.origin}/success`,
+          cancel_url: `${window.location.origin}/cancel`,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (!response?.data?.id) {
+        throw new Error("Invalid response from server");
+      }
+  
+      const stripe = await stripePromise;
+      await stripe.redirectToCheckout({ sessionId: response.data.id });
+    } catch (error) {
+      console.error("Error initiating payment:", error);
+      alert("Error initiating payment");
     }
   };
+  
+  
 
   return (
     <div className="p-6">
@@ -89,7 +111,7 @@ const Contracts = () => {
               ))}
             </div>
             <button
-              onClick={() => handlePayment(c.budget)}
+              onClick={() => handlePayment(c)}
               className="mt-2 bg-indigo-600 text-white px-4 py-2 rounded"
             >
               Pay Now

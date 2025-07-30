@@ -5,9 +5,10 @@ const jobSchema = new mongoose.Schema(
     client: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     title: { type: String, required: true },
     description: { type: String },
-    budget: { type: Number },
+    budget: { type: Number, required: true  },
     category: { type: String },
     deadline: { type: Date },
+   
   },
   { timestamps: true }
 );
