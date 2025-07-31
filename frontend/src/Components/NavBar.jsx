@@ -26,8 +26,7 @@ const Navbar = () => {
         <Link to="/change-password">Change Password</Link>
         
         <Link to="/jobs" className="text-blue-500 hover:underline">Browse Jobs</Link>
-        <Link to="/browse-jobs">Browse Jobs</Link>
-
+      
 
       </div>
       <button onClick={handleLogout} className="bg-red-500 px-3 py-1 rounded">Logout</button>
