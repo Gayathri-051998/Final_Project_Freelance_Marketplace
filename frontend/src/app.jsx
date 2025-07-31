@@ -20,6 +20,9 @@ import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancel from './pages/PaymentCancel';
 import Success from "./pages/success";
 import Cancel from "./pages/cancel";
+import AllJobs from './pages/Alljobs'; // ✅ Adjust the path as needed
+import BrowseJobs from './pages/BrowseJobs'; // adjust path if needed
+
 const App = () => {
   const auth = useContext(AuthContext);
   if (!auth) return null;
@@ -47,6 +50,8 @@ const App = () => {
         <Route path="/success" element={<Success />} />
         <Route path="/payment-cancel" element={<PaymentCancel />} />
         <Route path="/cancel" element={<Cancel />} />
+        <Route path="/jobs" element={<AllJobs />} />
+        <Route path="/browse-jobs" element={<BrowseJobs />} />
         <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
       </Routes>
     </>
