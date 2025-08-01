@@ -7,28 +7,46 @@ const BrowseJobs = () => {
   const [minBudget, setMinBudget] = useState('');
   const [maxBudget, setMaxBudget] = useState('');
   const [deadline, setDeadline] = useState('');
+  const [error, setError] = useState('');
 
   const handleSearch = async () => {
-    const query = new URLSearchParams({
-      search: searchTerm,
-      minBudget,
-      maxBudget,
-      deadline
-    }).toString();
+    try {
+      const query = new URLSearchParams({
+        search: searchTerm,
+        minBudget,
+        maxBudget,
+        deadline,
+      }).toString();
 
-    const response = await axios.get(`/api/jobs?${query}`);
-    setJobs(response.data);
+     // const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5137';
+
+//const response = await axios.get(`${BASE_URL}/api/jobs?${query}`);
+const response = await axios.get(`https://final-project-freelance-marketplace.onrender.com/api/jobs?${query}`);
+
+      console.log('API Response:', response.data); // optional for debugging
+
+      if (!Array.isArray(response.data)) {
+        throw new Error('Invalid response format: Jobs data is not an array');
+      }
+
+      setJobs(response.data);
+      setError(''); // clear error if successful
+    } catch (err) {
+      console.error('Search failed:', err);
+      setError('Failed to fetch jobs');
+      setJobs([]); // Reset jobs list
+    }
   };
 
   useEffect(() => {
-    handleSearch(); // Load all jobs initially
+    handleSearch(); // Load jobs on mount
   }, []);
 
   return (
     <div>
       <h2>Browse Jobs</h2>
 
-      {/* 🔍 Search & Filters */}
+      {/* 🔍 Search & Filter Section */}
       <div className="filter-section" style={{ marginBottom: '20px' }}>
         <input
           type="text"
@@ -56,9 +74,10 @@ const BrowseJobs = () => {
         <button onClick={handleSearch}>Search</button>
       </div>
 
-      {/* 🧾 Job Listings */}
-
-      {jobs.length === 0 ? (
+      {/* 🔁 Job Listings */}
+      {error ? (
+        <p style={{ color: 'red' }}>{error}</p>
+      ) : jobs.length === 0 ? (
         <p>No jobs found.</p>
       ) : (
         <ul>
