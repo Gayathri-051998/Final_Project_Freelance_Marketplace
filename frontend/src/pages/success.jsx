@@ -1,7 +1,21 @@
-import React from "react";
+import React , { useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import axios from '../axios';
 const Success = () => {
+  useEffect(() => {
+    const contractId = localStorage.getItem("lastPaidContract");
+
+    if (contractId) {
+      axios.post('/api/payments/mark-paid', { contractId })
+        .then(() => {
+          console.log("✅ Contract marked as paid");
+          localStorage.removeItem("lastPaidContract");
+        })
+        .catch(err => {
+          console.error("❌ Failed to update contract status:", err);
+        });
+    }
+  }, []);
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-white px-4 py-10">
       <div className="max-w-md w-full bg-green-100 border border-green-300 rounded-2xl p-8 shadow-md text-center">

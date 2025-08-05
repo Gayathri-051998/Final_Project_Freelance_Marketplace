@@ -11,6 +11,10 @@ const contractSchema = new mongoose.Schema(
       enum: ['pending', 'accepted', 'in_progress', 'completed', 'cancelled'],
       default: 'pending',
     },
+    isPaid: {
+      type: Boolean,
+      default: false
+    },
     milestones: [
       {
         title: String,

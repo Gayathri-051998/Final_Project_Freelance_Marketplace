@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Stripe = require('stripe');
 const { protect } = require('../middleware/authMiddleware');
+const { markContractAsPaid } = require('../controllers/paymentcontroller');
 require('dotenv').config();
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
@@ -45,5 +46,6 @@ router.post('/create-checkout-session', protect, async (req, res) => {
     return res.status(500).json({ error: 'Failed to create Stripe session' });
   }
 });
+router.post('/mark-paid', protect, markContractAsPaid);
 
 module.exports = router;

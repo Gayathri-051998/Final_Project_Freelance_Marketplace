@@ -21,7 +21,10 @@ const BrowseJobs = () => {
      // const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5137';
 
 //const response = await axios.get(`${BASE_URL}/api/jobs?${query}`);
-const response = await axios.get(`https://final-project-freelance-marketplace.onrender.com/api/jobs?${query}`);
+const BASE_URL = import.meta.env.VITE_API_URL;
+
+const response = await axios.get(`${BASE_URL}/api/jobs?${query}`);
+
 
       console.log('API Response:', response.data); // optional for debugging
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // ✅ include useNavigate
+import { Link, useNavigate ,NavLink} from 'react-router-dom'; // ✅ include useNavigate
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -27,6 +27,8 @@ const Navbar = () => {
         
         <Link to="/jobs" >Browse Jobs</Link>
         <Link to="/browse-jobs">Search Jobs</Link>
+        <NavLink to="/browse-services">Browse Services</NavLink>
+
       </div>
       <button onClick={handleLogout} className="bg-red-500 px-3 py-1 rounded">Logout</button>
     </nav>

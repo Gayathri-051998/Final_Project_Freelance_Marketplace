@@ -9,7 +9,6 @@ const stripePromise = loadStripe("pk_test_51RfKm4Gfpwi1sYyw3Xzq7rP1pVfFIJOdqiZPc
 
 const Contracts = () => {
   const { token } = useAuth();
-  console.log("🔑 Token from AuthContext:", token);
   const notificationContext = useContext(NotificationContext);
   const addNotification = notificationContext?.addNotification || (() => {});
 
@@ -48,19 +47,20 @@ const Contracts = () => {
   const handlePayment = async (contract) => {
     try {
       const price = contract.job?.budget;
-  
-console.log("🧾 Full contract object:", contract);
-console.log("📦 Job inside contract:", contract.job);
-console.log("💸 Budget from job:", contract.job?.budget);
+
+      console.log("🧾 Full contract object:", contract);
+      console.log("📦 Job inside contract:", contract.job);
+      console.log("💸 Budget from job:", contract.job?.budget);
+
       if (!contract.job?.budget || isNaN(contract.job.budget)) {
         alert("Invalid payment amount");
         return;
       }
-  
+
       const response = await axios.post(
         'https://final-project-freelance-marketplace.onrender.com/api/payments/create-checkout-session',
         {
-          amount: contract.job.budget ,
+          amount: contract.job.budget,
           success_url: `${window.location.origin}/success`,
           cancel_url: `${window.location.origin}/cancel`,
         },
@@ -70,11 +70,11 @@ console.log("💸 Budget from job:", contract.job?.budget);
           },
         }
       );
-  
+
       if (!response?.data?.id) {
         throw new Error("Invalid response from server");
       }
-  
+      localStorage.setItem("lastPaidContract", contract._id); // 👈 Add this
       const stripe = await stripePromise;
       await stripe.redirectToCheckout({ sessionId: response.data.id });
     } catch (error) {
@@ -82,8 +82,6 @@ console.log("💸 Budget from job:", contract.job?.budget);
       alert("Error initiating payment");
     }
   };
-  
-  
 
   return (
     <div className="p-6">
@@ -96,11 +94,19 @@ console.log("💸 Budget from job:", contract.job?.budget);
         contracts.map((c) => (
           <div key={c._id} className="p-4 border rounded mb-4 shadow">
             <h3 className="font-semibold">{c.job?.title}</h3>
-            <p>Status: <strong>{c.status}</strong></p>
+
+            <p>
+              Status: <strong>{c.status}</strong>
+              {c.isPaid && (
+                <span className="ml-3 text-green-600 font-semibold">✅ Paid</span>
+              )}
+            </p>
+
             <p>Freelancer: {c.freelancer?.name}</p>
             <p>Client: {c.client?.name}</p>
+
             <div className="space-x-2 mt-2">
-              {['accepted', 'in_progress', 'completed'].map(status => (
+              {['accepted', 'in_progress', 'completed'].map((status) => (
                 <button
                   key={status}
                   onClick={() => updateStatus(c._id, status)}
@@ -110,12 +116,15 @@ console.log("💸 Budget from job:", contract.job?.budget);
                 </button>
               ))}
             </div>
-            <button
-              onClick={() => handlePayment(c)}
-              className="mt-2 bg-indigo-600 text-white px-4 py-2 rounded"
-            >
-              Pay Now
-            </button>
+
+            {!c.isPaid && (
+              <button
+                onClick={() => handlePayment(c)}
+                className="mt-2 bg-indigo-600 text-white px-4 py-2 rounded"
+              >
+                Pay Now
+              </button>
+            )}
           </div>
         ))
       )}

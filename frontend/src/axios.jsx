@@ -6,5 +6,7 @@ const instance = axios.create({
   baseURL: 'https://final-project-freelance-marketplace.onrender.com' // backend URL
 });
 
+
+
 export default instance;
 

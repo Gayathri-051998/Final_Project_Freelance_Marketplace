@@ -22,7 +22,7 @@ import Success from "./pages/success";
 import Cancel from "./pages/cancel";
 import AllJobs from './pages/Alljobs'; // ✅ Adjust the path as needed
 import BrowseJobs from './pages/BrowseJobs'; // adjust path if needed
-
+import BrowseServices from './pages/BrowserServices';
 const App = () => {
   const auth = useContext(AuthContext);
   if (!auth) return null;
@@ -52,6 +52,8 @@ const App = () => {
         <Route path="/cancel" element={<Cancel />} />
         <Route path="/jobs" element={<AllJobs />} />
         <Route path="/browse-jobs" element={<BrowseJobs />} />
+        <Route path="/browse-services" element={<BrowseServices />} />
+
         <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
       </Routes>
     </>
