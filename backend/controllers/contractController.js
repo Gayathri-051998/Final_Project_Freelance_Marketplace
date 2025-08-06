@@ -58,13 +58,14 @@ console.log(JSON.stringify(contracts, null, 2));
 
 const getUsedJobIds = async (req, res) => {
   try {
-    console.log("📥 Fetching all contract jobs...");
     const contracts = await Contract.find({}, 'job');
 
-    console.log("✅ Contracts fetched:", contracts);
+    // ✅ Skip contracts with undefined/null job
+    const usedJobIds = contracts
+      .filter(contract => contract.job) // only keep ones with valid job
+      .map(contract => contract.job.toString());
 
-    const usedJobIds = contracts.map(contract => contract.job?.toString());
-    console.log("🧠 Used Job IDs:", usedJobIds);
+    console.log("✅ Used Job IDs:", usedJobIds);
 
     res.json(usedJobIds);
   } catch (err) {
