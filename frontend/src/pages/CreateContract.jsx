@@ -1,94 +1,109 @@
+// src/pages/CreateContract.jsx
 import React, { useEffect, useState } from 'react';
 import axios from '../axios';
-import { useAuth} from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-function CreateContract() {
+const CreateContract = () => {
   const { token } = useAuth();
   const [freelancers, setFreelancers] = useState([]);
   const [jobs, setJobs] = useState([]);
-  const [form, setForm] = useState({ freelancer: '', job: '' });
-  const navigate = useNavigate();
+  const [usedJobIds, setUsedJobIds] = useState([]); // ✅ MUST initialize as []
+  const [selectedFreelancer, setSelectedFreelancer] = useState('');
+  const [selectedJob, setSelectedJob] = useState('');
+  const [message, setMessage] = useState('');
 
-  // Fetch freelancers
+  // 🔁 Fetch data
   useEffect(() => {
-    axios
-      .get('/api/auth/freelancers', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setFreelancers(res.data))
-      .catch(() => alert('Failed to load freelancers'));
+    axios.get('/api/auth/freelancers', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => setFreelancers(res.data))
+    .catch(err => console.error("Failed to load freelancers", err));
+  
+    axios.get('/api/contracts/jobs-used', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => setUsedJobIds(res.data))
+    .catch(err => console.error("Failed to load used job ids", err));
+  
+    axios.get('/api/jobs/me', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => setJobs(res.data))
+    .catch(err => console.error("Failed to load jobs", err));
   }, [token]);
+  
 
-  // Fetch jobs posted by this client
-  useEffect(() => {
-    axios
-      .get('https://final-project-freelance-marketplace.onrender.com/api/jobs/my-jobs', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setJobs(res.data))
-      .catch(() => alert('Failed to load jobs'));
-  }, [token]);
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
+  // ✅ Filter only jobs that are NOT used in contracts
+  const availableJobs = jobs.filter(job => !usedJobIds?.includes(job._id));
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://final-project-freelance-marketplace.onrender.com/api/contracts', form, {
-        headers: { Authorization: `Bearer ${token}` },
+      console.log("Creating contract with:",  selectedFreelancer, selectedJob );
+      await axios.post('/api/contracts', {
+        freelancerId: selectedFreelancer,
+        jobId: selectedJob
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
       });
-      alert('Contract created successfully!');
-      navigate('/contracts');
-    } catch {
-      alert('Failed to create contract');
+      setMessage('✅ Contract created successfully!');
+    } catch (err) {
+      console.error("❌ Contract creation failed:", err);
+      setMessage('❌ Failed to create contract');
     }
   };
 
+ 
+
   return (
-    <div className="max-w-xl mx-auto p-6 mt-10 border shadow">
+    <div className="p-6">
       <h2 className="text-xl font-bold mb-4">Create Contract</h2>
+
+      {message && <p className="mb-4">{message}</p>}
+
       <form onSubmit={handleSubmit} className="space-y-4">
-        <select
-          name="freelancer"
-          value={form.freelancer}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border"
-        >
-          <option value="">Select Freelancer</option>
-          {freelancers.map((f) => (
-            <option key={f._id} value={f._id}>
-              {f.name} ({f.email})
-            </option>
-          ))}
-        </select>
+        <div>
+          <label>Freelancer</label>
+          <select
+            value={selectedFreelancer}
+            onChange={(e) => setSelectedFreelancer(e.target.value)}
+            className="block w-full border px-3 py-2"
+          >
+            <option value="">Select Freelancer</option>
+            {freelancers.map(f => (
+              <option key={f._id} value={f._id}>
+                {f.name} ({f.email})
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <select
-          name="job"
-          value={form.job}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border"
-        >
-          <option value="">Select Job</option>
-          {jobs.map((j) => (
-            <option key={j._id} value={j._id}>
-              {j.title}
-            </option>
-          ))}
-        </select>
+        <div>
+          <label>Job</label>
+          <select
+            value={selectedJob}
+            onChange={(e) => setSelectedJob(e.target.value)}
+            className="block w-full border px-3 py-2"
+          >
+            <option value="">Select Job</option>
+            {availableJobs.map(job => (
+              <option key={job._id} value={job._id}>
+                {job.title}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <button className="bg-blue-600 text-white px-4 py-2 rounded">
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+          disabled={!selectedFreelancer || !selectedJob}
+        >
           Create Contract
         </button>
       </form>
     </div>
   );
-}
-
+};
 
 export default CreateContract;
-

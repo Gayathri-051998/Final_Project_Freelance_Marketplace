@@ -56,9 +56,18 @@ const getProfile = async (req, res) => {
   res.json(req.user);
 };
 
+const getAllFreelancers = async (req, res) => {
+  try {
+    const freelancers = await User.find({ role: 'freelancer' }, 'name email');
+    res.json(freelancers);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch freelancers' });
+  }
+};
 module.exports = {
   registerUser,
   loginUser,
-  getProfile
+  getProfile,
+  getAllFreelancers
 };
 

@@ -4,7 +4,8 @@ const router = express.Router();
 const {
   registerUser,
   loginUser,
-  getProfile
+  getProfile,
+  getAllFreelancers
 } = require('../controllers/authController');
 
 const { protect } = require('../middleware/authMiddleware');
@@ -14,6 +15,9 @@ const User = require('../models/user'); // ✅ Needed to query freelancers
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.get('/me', protect, getProfile);
+// routes/authRoutes.js
+router.get('/freelancers', protect, getAllFreelancers);
+
 
 // ✅ NEW: Get all freelancers
 router.get('/freelancers', protect, async (req, res) => {

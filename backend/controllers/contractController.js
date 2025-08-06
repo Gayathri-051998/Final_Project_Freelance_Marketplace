@@ -1,15 +1,33 @@
 const Contract = require('../models/Contract');
 
-exports.createContract = async (req, res) => {
+ const createContract = async (req, res) => {
   try {
-    const contract = await Contract.create({ ...req.body, client: req.user._id });
+    console.log("📥 Received body:", req.body);
+    console.log("👤 Authenticated user:", req.user);
+
+    const { freelancerId, jobId } = req.body;
+
+    if (!freelancerId || !jobId) {
+      console.log("🚫 Missing freelancerId or jobId");
+      return res.status(400).json({ error: 'Missing freelancerId or jobId' });
+    }
+
+    const contract = await Contract.create({
+      freelancer: freelancerId,
+      client: req.user._id,
+      job: jobId,
+    });
+
+    console.log("✅ Contract created:", contract);
     res.status(201).json(contract);
-  } catch (error) {
-    res.status(400).json({ message: 'Contract creation failed', error: error.message });
+  } catch (err) {
+    console.error("❌ Failed to create contract:", err.message);
+    res.status(500).json({ error: 'Server error', details: err.message });
   }
 };
 
-exports.getContractsByUser = async (req, res) => {
+
+const getContractsByUser = async (req, res) => {
   console.log("Fetching contracts for user:", req.user._id);
 
   try {
@@ -38,9 +56,18 @@ console.log(JSON.stringify(contracts, null, 2));
   }
 };
 
+const getUsedJobIds = async (req, res) => {
+  try {
+    const contracts = await Contract.find({}, 'job');
+    const usedJobIds = contracts.map(contract => contract.job.toString());
+    res.json(usedJobIds);
+  } catch (err) {
+    console.error('Error fetching used job IDs:', err);
+    res.status(500).json({ message: 'Failed to fetch used job IDs' });
+  }
+};
 
-
-  exports.updateContractStatus = async (req, res) => {
+const updateContractStatus = async (req, res) => {
     try {
       const updatedContract = await Contract.findByIdAndUpdate(
         req.params.id,
@@ -62,5 +89,11 @@ console.log(JSON.stringify(contracts, null, 2));
     }
   };
   
+  module.exports = {
+    createContract,
+    getContractsByUser,
+    getUsedJobIds,
+    updateContractStatus,
+  };
   
   

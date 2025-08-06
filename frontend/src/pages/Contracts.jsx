@@ -8,7 +8,7 @@ import { loadStripe } from '@stripe/stripe-js';
 const stripePromise = loadStripe("pk_test_51RfKm4Gfpwi1sYyw3Xzq7rP1pVfFIJOdqiZPcBQFiRbRngG1tTGB3UYsjgAp1pxmnEoPHKJQeTBAXKH0rnbm8e9z00Rjir6uO1");
 
 const Contracts = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const notificationContext = useContext(NotificationContext);
   const addNotification = notificationContext?.addNotification || (() => {});
 
@@ -117,7 +117,7 @@ const Contracts = () => {
               ))}
             </div>
 
-            {!c.isPaid && (
+            {!c.isPaid  && c.client?._id === user._id && (
               <button
                 onClick={() => handlePayment(c)}
                 className="mt-2 bg-indigo-600 text-white px-4 py-2 rounded"
