@@ -58,14 +58,21 @@ console.log(JSON.stringify(contracts, null, 2));
 
 const getUsedJobIds = async (req, res) => {
   try {
+    console.log("📥 Fetching all contract jobs...");
     const contracts = await Contract.find({}, 'job');
-    const usedJobIds = contracts.map(contract => contract.job.toString());
+
+    console.log("✅ Contracts fetched:", contracts);
+
+    const usedJobIds = contracts.map(contract => contract.job?.toString());
+    console.log("🧠 Used Job IDs:", usedJobIds);
+
     res.json(usedJobIds);
   } catch (err) {
-    console.error('Error fetching used job IDs:', err);
-    res.status(500).json({ message: 'Failed to fetch used job IDs' });
+    console.error('❌ Error in getUsedJobIds:', err.message);
+    res.status(500).json({ message: 'Failed to fetch used job IDs', error: err.message });
   }
 };
+
 
 const updateContractStatus = async (req, res) => {
     try {
