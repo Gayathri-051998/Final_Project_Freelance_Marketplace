@@ -35,7 +35,8 @@ const CreateContract = () => {
   
 
   // ✅ Filter only jobs that are NOT used in contracts
-  const availableJobs = jobs.filter(job => !usedJobIds?.includes(job._id));
+  const availableJobs = jobs;
+  //.filter(job => !usedJobIds?.includes(job._id));
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -47,9 +48,22 @@ const CreateContract = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMessage('✅ Contract created successfully!');
+
+      // ✅ Reset form
+    setSelectedFreelancer('');
+    setSelectedJob('');
+    const updated = await axios.get('/api/contracts/jobs-used', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setUsedJobIds(updated.data);
+
+    // ✅ Auto-hide success message after 3 seconds
+    setTimeout(() => setMessage(''), 3000);
     } catch (err) {
       console.error("❌ Contract creation failed:", err);
       setMessage('❌ Failed to create contract');
+      // ❌ Optionally clear error message too after 3s
+    setTimeout(() => setMessage(''), 3000);
     }
   };
 

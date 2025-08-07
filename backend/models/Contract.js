@@ -23,6 +23,11 @@ const contractSchema = new mongoose.Schema(
       },
     ],
     totalAmount: Number,
+    review: {
+      reviewer: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      rating: Number,
+      comment: String
+    }
   },
   { timestamps: true }
 );

@@ -37,6 +37,7 @@ const getContractsByUser = async (req, res) => {
       .populate('job') // 👈 make sure it's just 'job' for now
       .populate('client', 'name')
       .populate('freelancer', 'name')
+      res.json(contracts);
 
     // 🔍 Add this log to see full contract objects
     
@@ -97,11 +98,52 @@ const updateContractStatus = async (req, res) => {
     }
   };
   
+  // controllers/contractController.js
+  // contractController.js
+
+
+
+const submitReview = async (req, res) => {
+  try {
+    console.log("🔍 Incoming contract ID:", req.params.id);
+console.log("📝 Review data:", req.body);
+console.log("👤 User from token:", req.user);
+
+    const contract = await Contract.findById(req.params.id);
+
+    if (!contract) {
+      return res.status(404).json({ message: 'Contract not found' });
+    }
+
+  // Prevent duplicate reviews
+  if (contract.review && contract.review.reviewer.toString() === req.user._id.toString()) {
+    return res.status(400).json({ message: 'You already reviewed this contract' });
+  }
+
+    contract.review = {
+      reviewer: req.user._id,
+      rating: req.body.rating,
+      comment: req.body.comment,
+    };
+
+    await contract.save();
+    res.status(200).json({ message: 'Review submitted successfully' });
+  } catch (error) {
+    console.error('Review error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+
+  
+
   module.exports = {
     createContract,
     getContractsByUser,
     getUsedJobIds,
     updateContractStatus,
+    submitReview,
   };
   
   
