@@ -21,9 +21,8 @@ app.use(express.json());
 connectDB();
 
 // Middleware
-const allowedOrigins = [
+/*const allowedOrigins = [
   'http://localhost:5173',
-  'https://dashing-bienenstitch-f7f9b5.netlify.app',
 ];
 
 app.use(cors({
@@ -35,8 +34,16 @@ app.use(cors({
     }
   },
   credentials: true
-}));
+}));*/
 
+
+// ✅ Use CORS properly
+app.use(
+  cors({
+    origin: ['http://localhost:5173', 'https://dashing-bienenstitch-f7f9b5.netlify.app'],
+    credentials: true // needed if using cookies or auth headers
+  })
+);
 
 
 app.use((req, res, next) => {
