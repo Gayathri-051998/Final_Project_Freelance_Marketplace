@@ -21,17 +21,23 @@ app.use(express.json());
 connectDB();
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://dashing-bienenstitch-f7f9b5.netlify.app',
+];
+
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || origin.includes('netlify.app') || origin.includes('localhost')) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
-      
     } else {
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true
 }));
+
+
 
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
