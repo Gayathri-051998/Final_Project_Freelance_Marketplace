@@ -122,15 +122,18 @@ const updateJob = async (req, res) => {
 // Close job
 const closeJob = async (req, res) => {
   try {
-    const job = await Job.findOneAndUpdate(
-      { _id: req.params.id, client: req.user._id },
-      { status: 'closed' },
-      { new: true }
-    );
+    const job = await Job.findById(req.params.id);
     if (!job) return res.status(404).json({ message: 'Job not found' });
-    res.json(job);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+
+    if (job.client.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Not allowed' });
+    }
+
+    job.status = 'closed';
+    const saved = await job.save();
+    res.json(saved);
+  } catch (e) {
+    res.status(500).json({ message: 'Server error' });
   }
 };
 

@@ -64,9 +64,18 @@ const MyJobs = () => {
   useEffect(() => { fetchJobs(); }, []);
 
   const handleClose = async (id) => {
-    await axios.patch(`/api/jobs/${id}/close`, {}, { headers: { Authorization: `Bearer ${token}` } });
-    fetchJobs();
+    try {
+      const { data } = await axios.patch(`/api/jobs/${id}/close`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Optimistically update local state
+      setJobs(prev => prev.map(j => (j._id === id ? data : j)));
+    } catch (err) {
+      console.error(err);
+      alert('Failed to close job');
+    }
   };
+  
 
   const handleDelete = async (id) => {
     await axios.delete(`/api/jobs/${id}`, { headers: { Authorization: `Bearer ${token}` } });
@@ -78,6 +87,11 @@ const MyJobs = () => {
     fetchJobs();
   };
 
+  const handleJobUpdated = (updatedJob) => {
+    setJobs(prev =>
+      prev.map(j => (j._id === updatedJob._id ? updatedJob : j))
+    );
+  };
   return (
     <div className="p-6">
       <h2 className="text-xl font-bold mb-4">My Jobs</h2>
@@ -95,7 +109,7 @@ const MyJobs = () => {
         </div>
       ))}
 
-      {editingJob && <EditJobModal job={editingJob} onClose={() => setEditingJob(null)} onSaved={fetchJobs} />}
+      {editingJob && <EditJobModal job={editingJob} onClose={() => setEditingJob(null)} onJobUpdated={handleJobUpdated}  />}
     </div>
   );
 };
