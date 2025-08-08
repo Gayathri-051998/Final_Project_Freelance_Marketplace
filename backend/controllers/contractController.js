@@ -106,7 +106,7 @@ const updateContractStatus = async (req, res) => {
 
 
 
-  const submitReview = async (req, res) => {
+  const SubmitReview = async (req, res) => {
     try {
       console.log("🔍 Incoming contract ID:", req.params.id);
       console.log("📝 Review data:", req.body);
@@ -154,7 +154,7 @@ const updateContractStatus = async (req, res) => {
     getContractsByUser,
     getUsedJobIds,
     updateContractStatus,
-    submitReview,
+    SubmitReview,
   };
   
   

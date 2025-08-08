@@ -80,3 +80,5 @@ app.get('/api/ping', (req, res) => {
 app.get('/api/ping', (req, res) => {
   res.send("✅ Server is live");
 });
+
+app.use((req, _res, next) => { console.log(req.method, req.originalUrl); next(); });

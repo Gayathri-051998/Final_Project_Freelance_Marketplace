@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+/*import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from '../axios';
 
@@ -42,3 +42,62 @@ const MyJobs = () => {
 
 export default MyJobs;
 
+*/
+
+import React, { useEffect, useState } from 'react';
+import axios from '../axios';
+import { useAuth } from '../context/AuthContext';
+import EditJobModal from '../components/EditJobModal';
+
+const MyJobs = () => {
+  const { token } = useAuth();
+  const [jobs, setJobs] = useState([]);
+  const [editingJob, setEditingJob] = useState(null);
+
+  const fetchJobs = async () => {
+    const res = await axios.get('/api/jobs/me', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setJobs(res.data);
+  };
+
+  useEffect(() => { fetchJobs(); }, []);
+
+  const handleClose = async (id) => {
+    await axios.patch(`/api/jobs/${id}/close`, {}, { headers: { Authorization: `Bearer ${token}` } });
+    fetchJobs();
+  };
+
+  const handleDelete = async (id) => {
+    await axios.delete(`/api/jobs/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+    fetchJobs();
+  };
+
+  const handleDuplicate = async (id) => {
+    await axios.post(`/api/jobs/${id}/duplicate`, {}, { headers: { Authorization: `Bearer ${token}` } });
+    fetchJobs();
+  };
+
+  return (
+    <div className="p-6">
+      <h2 className="text-xl font-bold mb-4">My Jobs</h2>
+      {jobs.map(job => (
+        <div key={job._id} className="p-4 border rounded mb-3">
+          <h3>{job.title}</h3>
+          <p>Status: {job.status}</p>
+          <p>Budget: ${job.budget}</p>
+          <div className="mt-2 space-x-2">
+            <button onClick={() => setEditingJob(job)} className="bg-blue-500 text-white px-2 py-1">Edit</button>
+            {job.status !== 'closed' && <button onClick={() => handleClose(job._id)} className="bg-yellow-500 text-white px-2 py-1">Close</button>}
+            <button onClick={() => handleDelete(job._id)} className="bg-red-500 text-white px-2 py-1">Delete</button>
+            <button onClick={() => handleDuplicate(job._id)} className="bg-gray-500 text-white px-2 py-1">Duplicate</button>
+          </div>
+        </div>
+      ))}
+
+      {editingJob && <EditJobModal job={editingJob} onClose={() => setEditingJob(null)} onSaved={fetchJobs} />}
+    </div>
+  );
+};
+
+export default MyJobs;

@@ -4,7 +4,7 @@ const {
   getContractsByUser,
   updateContractStatus,
   getUsedJobIds,
-  submitReview,
+  SubmitReview,
 } = require('../controllers/contractController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -15,7 +15,7 @@ router.get('/me', protect, getContractsByUser);
 router.put('/:id/status', protect, updateContractStatus);
 router.get('/jobs-used', protect, getUsedJobIds);
 
-router.post('/:id/review', protect, submitReview);
+router.post('/:id/review', protect, SubmitReview);
 
 module.exports = router;
 

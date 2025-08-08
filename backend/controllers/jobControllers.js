@@ -1,4 +1,4 @@
-const Job = require('../models/job');
+/*const Job = require('../models/job');
 
 // Create Job (Client)
 exports.createJob = async (req, res) => {
@@ -60,6 +60,123 @@ exports.getAllJobs = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch jobs', error: err.message });
   }
+};
+*/
+
+
+
+const Job = require('../models/Job');
+
+// Create job
+const createJob = async (req, res) => {
+  try {
+    const job = await Job.create({ ...req.body, client: req.user._id });
+    res.status(201).json(job);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+// Get my jobs
+const myJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find({ client: req.user._id, isArchived: false })
+      .sort({ createdAt: -1 });
+    res.json(jobs);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Update job
+// controllers/jobControllers.js (CommonJS)
+
+const updateJob = async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) return res.status(404).json({ message: 'Job not found' });
+
+    // 👇 Adjust this field name to your schema: client or user
+    if (job.client?.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Not allowed to edit this job' });
+    }
+
+    job.title = req.body.title ?? job.title;
+    job.description = req.body.description ?? job.description;
+    job.budget = req.body.budget ?? job.budget;
+    job.tags = Array.isArray(req.body.tags) ? req.body.tags : job.tags;
+
+    const saved = await job.save();
+    return res.json(saved);
+  } catch (err) {
+    console.error('updateJob error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+
+
+
+
+// Close job
+const closeJob = async (req, res) => {
+  try {
+    const job = await Job.findOneAndUpdate(
+      { _id: req.params.id, client: req.user._id },
+      { status: 'closed' },
+      { new: true }
+    );
+    if (!job) return res.status(404).json({ message: 'Job not found' });
+    res.json(job);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Archive (soft delete)
+const archiveJob = async (req, res) => {
+  try {
+    const job = await Job.findOneAndUpdate(
+      { _id: req.params.id, client: req.user._id },
+      { isArchived: true },
+      { new: true }
+    );
+    if (!job) return res.status(404).json({ message: 'Job not found' });
+    res.json({ message: 'Job archived' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Duplicate job
+const duplicateJob = async (req, res) => {
+  try {
+    const original = await Job.findOne({ _id: req.params.id, client: req.user._id });
+    if (!original) return res.status(404).json({ message: 'Job not found' });
+
+    const copy = await Job.create({
+      title: original.title + ' (Copy)',
+      description: original.description,
+      budget: original.budget,
+      tags: original.tags,
+      status: 'draft',
+      client: req.user._id
+    });
+
+    res.status(201).json(copy);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = {
+  createJob,
+  myJobs,
+  updateJob,
+  closeJob,
+  archiveJob,
+  duplicateJob
 };
 
 

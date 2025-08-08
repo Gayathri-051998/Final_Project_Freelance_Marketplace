@@ -8,7 +8,10 @@ const jobSchema = new mongoose.Schema(
     budget: { type: Number, required: true  },
     category: { type: String },
     deadline: { type: Date },
-   
+    tags: [{ type: String }],
+  status: { type: String, enum: ['draft', 'active', 'closed'], default: 'draft' },
+  isArchived: { type: Boolean, default: false },
+  client: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
   },
   { timestamps: true }
 );
