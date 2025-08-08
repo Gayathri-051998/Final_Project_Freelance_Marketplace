@@ -12,7 +12,7 @@ import MyJobs from './pages/MyJobs';
 import PostService from './pages/PostService';
 import MyServices from './pages/MyServices';
 import Contracts from './pages/Contracts';
-
+import  submitReview  from './pages/SubmitReview';
 import Profile from './pages/Profile';
 import ChangePassword from './pages/ChangePassword';
 import CreateContract from './pages/CreateContract';
@@ -43,7 +43,7 @@ const App = () => {
         <Route path="/post-service" element={user ? <PostService /> : <Navigate to="/login" />} />
         <Route path="/my-services" element={user ? <MyServices /> : <Navigate to="/login" />} />
         <Route path="/contracts" element={user ? <Contracts /> : <Navigate to="/login" />} />
-        
+        <Route path="/submit-review" element={user ? <submitReview /> : <Navigate to="/login" />} />
         <Route path="/create-contract" element={user ? <CreateContract /> : <Navigate to="/login" />} />
         <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
         <Route path="/change-password" element={user ? <ChangePassword /> : <Navigate to="/login" />} />

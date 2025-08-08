@@ -20,7 +20,7 @@ const Contracts = () => {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => setContracts(res.data))
-      .catch(() => alert('Failed to load contracts'))
+     // .catch(() => alert('Failed to load contracts'))
       .finally(() => setLoading(false));
   }, [token]);
 

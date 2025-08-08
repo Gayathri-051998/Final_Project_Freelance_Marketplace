@@ -37,7 +37,7 @@ const getContractsByUser = async (req, res) => {
       .populate('job') // 👈 make sure it's just 'job' for now
       .populate('client', 'name')
       .populate('freelancer', 'name')
-      res.json(contracts);
+     // res.json(contracts);
 
     // 🔍 Add this log to see full contract objects
     
@@ -50,6 +50,9 @@ console.log(JSON.stringify(contracts, null, 2));
     console.log("🧠 FULL job object sent to frontend:", JSON.stringify(contracts[0].job, null, 2));
     console.log("💸 job.budget sent to frontend:", contracts[0].job?.budget);
    
+    
+
+
     
     res.json(contracts);
   } catch (err) {
@@ -103,37 +106,45 @@ const updateContractStatus = async (req, res) => {
 
 
 
-const submitReview = async (req, res) => {
-  try {
-    console.log("🔍 Incoming contract ID:", req.params.id);
-console.log("📝 Review data:", req.body);
-console.log("👤 User from token:", req.user);
-
-    const contract = await Contract.findById(req.params.id);
-
-    if (!contract) {
-      return res.status(404).json({ message: 'Contract not found' });
+  const submitReview = async (req, res) => {
+    try {
+      console.log("🔍 Incoming contract ID:", req.params.id);
+      console.log("📝 Review data:", req.body);
+      console.log("👤 User from token:", req.user);
+  
+      const contract = await Contract.findById(req.params.id);
+  
+      if (!contract) {
+        return res.status(404).json({ message: 'Contract not found' });
+      }
+  
+      // ✅ Log the current review (for debugging)
+      console.log("📋 Existing review:", contract.review);
+  
+      // ✅ Only check .toString() if reviewer exists
+      if (contract.review && contract.review.reviewer) {
+        if (contract.review.reviewer.toString() === req.user._id.toString()) {
+          return res.status(400).json({ message: 'You already reviewed this contract' });
+        }
+      }
+  
+      // ✅ Set review
+      contract.review = {
+        reviewer: req.user._id,
+        rating: req.body.rating,
+        comment: req.body.comment,
+      };
+  
+      await contract.save();
+      res.status(200).json({ message: 'Review submitted successfully' });
+  
+    } catch (error) {
+      console.error('❌ Review error (fallback catch):', error.stack || error.message);
+      res.status(500).json({ message: 'Server error', details: error.message });
     }
-
-  // Prevent duplicate reviews
-  if (contract.review && contract.review.reviewer.toString() === req.user._id.toString()) {
-    return res.status(400).json({ message: 'You already reviewed this contract' });
-  }
-
-    contract.review = {
-      reviewer: req.user._id,
-      rating: req.body.rating,
-      comment: req.body.comment,
-    };
-
-    await contract.save();
-    res.status(200).json({ message: 'Review submitted successfully' });
-  } catch (error) {
-    console.error('Review error:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
+  };
+  
+  
 
 
   
