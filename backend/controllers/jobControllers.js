@@ -65,8 +65,8 @@ exports.getAllJobs = async (req, res) => {
 
 
 
-const Job = require('../models/Job');
 
+const Job = require('../models/job');
 // Create job
 const createJob = async (req, res) => {
   try {
