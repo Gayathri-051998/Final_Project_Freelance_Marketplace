@@ -63,6 +63,8 @@ app.use('/api/payments', paymentRoutes);
 
 
 app.use((req, _res, next) => { console.log(req.method, req.originalUrl); next(); });
+
+
 // Root route
 app.get('/', (req, res) => {
   res.send('Freelance Marketplace API is running');
@@ -82,5 +84,6 @@ app.get('/api/ping', (req, res) => {
 app.get('/api/ping', (req, res) => {
   res.send("✅ Server is live");
 });
+
 
 

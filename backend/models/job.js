@@ -9,7 +9,7 @@ const jobSchema = new mongoose.Schema(
     category: { type: String },
     deadline: { type: Date },
     tags: [{ type: String }],
-  status: { type: String, enum: ['draft', 'active', 'closed'], default: 'draft' },
+  status: { type: String, enum: ['draft', 'active', 'closed'], default: 'active' },
   isArchived: { type: Boolean, default: false },
   client: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
   },

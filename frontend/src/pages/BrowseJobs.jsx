@@ -123,6 +123,7 @@ const BrowseJobs = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [status, setStatus] = useState('any');
 
   const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5137';
 
@@ -135,7 +136,7 @@ const BrowseJobs = () => {
       q: searchTerm || undefined,
       minBudget: minBudget || undefined,
       maxBudget: maxBudget || undefined,
-      status: 'active',
+      status: status !== 'any' ? status : undefined, // only send if not "any"
       page,
       limit: PAGE_SIZE,
     }),
@@ -184,6 +185,7 @@ const BrowseJobs = () => {
     <div className="p-6 max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Available Jobs</h2>
 
+
       {/* Filters */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
         <input
@@ -209,6 +211,15 @@ const BrowseJobs = () => {
           onChange={(e) => setMaxBudget(e.target.value)}
           onKeyDown={onKeyDown}
         />
+
+<select value={status} onChange={e => setStatus(e.target.value)}>
+  <option value="any">Any status</option>
+  <option value="active">Active</option>
+  <option value="draft">Draft</option>
+  <option value="closed">Closed</option>
+</select>
+<button onClick={() => { setPage(1); load(); }}>Apply</button>
+
         <button
           onClick={applyFilters}
           className="bg-blue-600 text-white rounded px-4 py-2"
