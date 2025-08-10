@@ -4,7 +4,7 @@ const { createJob,
     updateJob,
     closeJob,
     archiveJob,
-    duplicateJob } = require('../controllers/jobControllers');
+    duplicateJob,listJobs } = require('../controllers/jobControllers');
 const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
@@ -18,7 +18,7 @@ router.get('/my-jobs', protect, getMyJobs); // ✅ added alias route
 // in routes/jobRoutes.js
 router.get('/all', getAllJobs);
 */
-
+router.get('/', listJobs);
 router.post('/', protect, createJob);
 router.get('/me', protect, myJobs);
 router.put('/:id', protect, updateJob);

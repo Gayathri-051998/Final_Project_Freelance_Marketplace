@@ -173,13 +173,59 @@ const duplicateJob = async (req, res) => {
   }
 };
 
+
+
+
+// PUBLIC list with filters: q, minBudget, maxBudget, status, page, limit
+const listJobs = async (req, res) => {
+  try {
+    const {
+      q,
+      minBudget,
+      maxBudget,
+      status = 'active',
+      page = 1,
+      limit = 10
+    } = req.query;
+
+    const filter = { isArchived: false };
+    if (status) filter.status = status;
+
+    if (q ) {
+      const rx = new RegExp(q.trim(), 'i');
+      filter.$or = [{ title: rx }, { description: rx }, { tags: rx }];
+    }
+
+    if (minBudget) {
+      filter.budget = { ...(filter.budget || {}), $gte: Number(minBudget) };
+    }
+    if (maxBudget) {
+      filter.budget = { ...(filter.budget || {}), $lte: Number(maxBudget) };
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+    const [items, total] = await Promise.all([
+      Job.find(filter).sort({ createdAt: -1 }).skip(skip).limit(Number(limit)),
+      Job.countDocuments(filter),
+    ]);
+
+    res.json({ items, total, page: Number(page), limit: Number(limit) });
+  } catch (err) {
+    console.error('listJobs error:', err);
+    res.status(500).json({ message: 'Failed to fetch jobs' });
+  }
+};
+
+
+
 module.exports = {
   createJob,
   myJobs,
   updateJob,
   closeJob,
   archiveJob,
-  duplicateJob
+  duplicateJob,
+  listJobs
 };
 
 
