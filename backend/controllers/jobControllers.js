@@ -282,7 +282,7 @@ module.exports = {
 
 
 // backend/controllers/jobControllers.js
-const Job = require('../models/Job');
+const Job = require('../models/job');
 
 /**
  * PUBLIC: List jobs with optional filters & pagination
