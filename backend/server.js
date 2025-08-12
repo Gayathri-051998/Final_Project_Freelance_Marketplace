@@ -20,9 +20,10 @@ app.use(express.json());
 // Database connection
 connectDB();
 
-// Middleware
+/*Middleware
 /*const allowedOrigins = [
   'http://localhost:5173',
+  'https://beamish-bonbon-6b1d49.netlify.app'
 ];
 
 app.use(cors({
@@ -38,15 +39,23 @@ app.use(cors({
 
 
 // ✅ Use this before any routes or middleware
-app.use(cors({
-  origin: ['http://localhost:5173', 'https://dashing-bienenstitch-f7f9b5.netlify.app'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
-
+const corsOptions = {
+  origin(origin, cb) {
+    if (!origin) return cb(null, true);          // server-to-server, health checks
+    const host = new URL(origin).host;           // e.g., foo-bar.netlify.app
+    const ok =
+      origin === 'http://localhost:5173' ||
+      host.endsWith('.netlify.app');
+    cb(ok ? null : new Error('Not allowed by CORS'), ok);
+  },
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: false,                            // set true only if you use cookies
+  optionsSuccessStatus: 204,
+};
+app.use(cors(corsOptions));
 // Handle preflight requests globally
-app.options('*', cors());
+app.options('*', cors(corsOptions));
 
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -64,6 +73,9 @@ app.use('/api/payments', paymentRoutes);
 
 app.use((req, _res, next) => { console.log(req.method, req.originalUrl); next(); });
 
+app.get('/api/ping', (req, res) => {
+  res.json({ status: "Backend is running 🚀" });
+});
 
 // Root route
 app.get('/', (req, res) => {
@@ -77,9 +89,7 @@ app.listen(PORT, () => {
 });
 
 
-app.get('/api/ping', (req, res) => {
-  res.json({ status: "Backend is running 🚀" });
-});
+
 
 app.get('/api/ping', (req, res) => {
   res.send("✅ Server is live");
