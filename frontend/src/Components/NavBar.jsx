@@ -21,7 +21,7 @@ const Navbar = () => {
         {user?.role === 'client' && <Link to="/create-contract">Create Contract</Link>}
 
         <Link to="/contracts">Contracts</Link>
-        <Link to="/review">Review</Link>
+      { /* <Link to="/review">Review</Link>*/}
         <Link to="/profile">Profile</Link>
         <Link to="/change-password">Change Password</Link>
         

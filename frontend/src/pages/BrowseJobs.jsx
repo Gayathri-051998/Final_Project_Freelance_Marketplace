@@ -106,6 +106,7 @@ export default BrowseJobs;
 */
 
 // src/pages/BrowseJobs.jsx
+/*
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 
@@ -140,7 +141,7 @@ const BrowseJobs = () => {
       page,
       limit: PAGE_SIZE,
     }),
-    [searchTerm, minBudget, maxBudget, page]
+    [searchTerm, minBudget, maxBudget, page, status]
   );
 
   const fetchJobs = async () => {
@@ -186,7 +187,7 @@ const BrowseJobs = () => {
       <h2 className="text-2xl font-bold mb-4">Available Jobs</h2>
 
 
-      {/* Filters */}
+      
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
         <input
           className="border rounded px-3 py-2"
@@ -217,7 +218,9 @@ const BrowseJobs = () => {
   <option value="active">Active</option>
   <option value="draft">Draft</option>
   <option value="closed">Closed</option>
-</select>
+</select> 
+
+
 <button onClick={() => { setPage(1); load(); }}>Apply</button>
 
         <button
@@ -231,7 +234,7 @@ const BrowseJobs = () => {
         </div>
       </div>
 
-      {/* Results */}
+    
       {loading ? (
         <p>Loading…</p>
       ) : error ? (
@@ -267,7 +270,7 @@ const BrowseJobs = () => {
         </div>
       )}
 
-      {/* Pagination */}
+    
       <div className="flex items-center gap-2 mt-6">
         <button
           disabled={!canPrev}
@@ -290,3 +293,133 @@ const BrowseJobs = () => {
 };
 
 export default BrowseJobs;
+*/
+
+
+// src/pages/BrowseJobs.jsx
+import React, { useEffect, useMemo, useState } from 'react';
+import axios from '../axios';
+
+const PAGE_SIZE = 10;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5137';
+
+export default function BrowseJobs() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [minBudget, setMinBudget] = useState('');
+  const [maxBudget, setMaxBudget] = useState('');
+  const [status, setStatus] = useState(''); // any | active | draft | closed
+
+  const [jobs, setJobs] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [applied, setApplied] = useState({
+    q: undefined,
+    minBudget: undefined,
+    maxBudget: undefined,
+    status: undefined,
+  });
+
+  /*const params = useMemo(() => ({
+    q: searchTerm || undefined,
+    minBudget: minBudget || undefined,
+    maxBudget: maxBudget || undefined,
+    status: status !== 'any' ? status : undefined,
+    page,
+    limit: PAGE_SIZE,
+  }), [searchTerm, minBudget, maxBudget, status, page]); // <-- include status
+*/
+
+const params = useMemo(() => ({
+     ...applied,
+     page,
+     limit: PAGE_SIZE,
+   }), [applied, page]);
+  const fetchJobs = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const { data } = await axios.get(`${BASE_URL}/api/jobs`, { params });
+      if (!data || !Array.isArray(data.items)) throw new Error('Bad shape');
+      setJobs(data.items);
+      setTotal(Number(data.total || 0));
+    } catch (e) {
+      console.error('Error fetching jobs:', e);
+      setError('Failed to fetch jobs');
+      setJobs([]);
+      setTotal(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
+
+  //const applyFilters = () => (page !== 1 ? setPage(1) : fetchJobs());
+  const applyFilters = () => {
+       const next = {
+         q: searchTerm || undefined,
+         minBudget: minBudget || undefined,
+         maxBudget: maxBudget || undefined,
+         // ignore empty string and "any"
+         status: status && status !== 'any' ? status : undefined,
+       };
+       setApplied(next);
+       if (page !== 1) setPage(1);
+       // no need to call fetchJobs() here; useEffect will run when `applied` changes
+     };
+  const canPrev = page > 1;
+  const canNext = page * PAGE_SIZE < total;
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Available Jobs</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
+        <input className="border rounded px-3 py-2" placeholder="Search"
+          value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+        <input type="number" className="border rounded px-3 py-2" placeholder="Min budget"
+          value={minBudget} onChange={e => setMinBudget(e.target.value)} />
+        <input type="number" className="border rounded px-3 py-2" placeholder="Max budget"
+          value={maxBudget} onChange={e => setMaxBudget(e.target.value)} />
+       {/*} <select className="border rounded px-3 py-2" value={status} onChange={e => setStatus(e.target.value)}>
+          <option value="any">Any status</option>
+          <option value="active">Active</option>
+          <option value="draft">Draft</option>
+          <option value="closed">Closed</option>
+        </select>*/}
+        <button onClick={applyFilters} className="bg-blue-600 text-white rounded px-4 py-2">Apply</button>
+      </div>
+
+      {loading ? <p>Loading…</p>
+        : error ? <p className="text-red-600">{error}</p>
+        : jobs.length === 0 ? <p>No jobs found.</p>
+        : <div className="space-y-4">
+            {jobs.map(job => (
+              <div key={job._id} className="border rounded p-4 shadow-sm">
+                <div className="flex items-baseline justify-between">
+                  <h3 className="font-semibold text-lg">{job.title}</h3>
+                  <span className="text-sm text-gray-600">Budget: ${Number(job.budget).toLocaleString()}</span>
+                </div>
+                <p className="text-gray-700 mt-1">{job.description}</p>
+                <div className="text-sm text-gray-500 mt-2">
+                  Status: {job.status} • Posted by: {job.client?.name || 'Unknown'}
+                </div>
+              </div>
+            ))}
+          </div>}
+
+      <div className="flex items-center gap-2 mt-6">
+        <button disabled={!canPrev} onClick={() => setPage(p => Math.max(1, p - 1))}
+          className={`px-3 py-1 rounded border ${canPrev ? 'bg-white' : 'bg-gray-100 cursor-not-allowed'}`}>Prev</button>
+        <span className="text-sm">Page {page}</span>
+        <button disabled={!canNext} onClick={() => setPage(p => p + 1)}
+          className={`px-3 py-1 rounded border ${canNext ? 'bg-white' : 'bg-gray-100 cursor-not-allowed'}`}>Next</button>
+      </div>
+    </div>
+  );
+}

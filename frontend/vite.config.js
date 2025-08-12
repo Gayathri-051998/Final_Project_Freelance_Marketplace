@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'https://final-project-freelance-marketplace.onrender.com',
+      '/api': 'https://final-project-freelance-marketplace.onrender.com' || 'http://localhost:5000',
     },
   },
   build: {

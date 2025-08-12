@@ -150,7 +150,7 @@ export default function AllJobs() {
           value={maxBudget}
           onChange={e => setMaxBudget(e.target.value)}
         />
-        <select
+        {/*<select
           className="border px-3 py-2 rounded"
           value={status}
           onChange={e => setStatus(e.target.value)}
@@ -159,7 +159,7 @@ export default function AllJobs() {
           <option value="active">Active</option>
           <option value="draft">Draft</option>
           <option value="closed">Closed</option>
-        </select>
+        </select>*/}
         <button
           className="bg-blue-600 text-white px-4 py-2 rounded"
           onClick={applyFilters}

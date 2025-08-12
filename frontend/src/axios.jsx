@@ -1,12 +1,10 @@
-
-import React from 'react';
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://final-project-freelance-marketplace.onrender.com' // backend URL
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000',
 });
 
-
-
 export default instance;
+
+
 

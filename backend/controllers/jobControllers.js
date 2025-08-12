@@ -307,7 +307,7 @@ exports.listJobs = async (req, res) => {
     }
 
     if (status && status !== 'any') {
-      filter.status = status;  // Only add if status is not 'any'
+      query.status = status;  // Only add if status is not 'any'
     }
 
     if (minBudget || maxBudget) {
